@@ -22,6 +22,7 @@ public class CustomerOrderTransfer {
         this.name = customerOrder.getName();
         this.deliveryTime = customerOrder.getDeliveryTime();
         this.paid = customerOrder.getPaid();
+        if (customerOrder.getStatus() != null)
         this.statusTransfer = new StatusTransfer(customerOrder.getStatus());
     }
 }
