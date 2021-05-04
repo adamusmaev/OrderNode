@@ -20,6 +20,10 @@ public class CustomerOrder {
 
     private Boolean paid;
 
+    private Integer customerId;
+
+    private Integer offerId;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "status_id")
     private Status status;
