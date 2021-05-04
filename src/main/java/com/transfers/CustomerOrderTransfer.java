@@ -16,6 +16,8 @@ public class CustomerOrderTransfer {
     private Date deliveryTime;
     private Boolean paid;
     private StatusTransfer statusTransfer;
+    private Integer offerId;
+    private Integer customerId;
 
     public CustomerOrderTransfer(CustomerOrder customerOrder) {
         this.id = customerOrder.getId();
@@ -24,5 +26,7 @@ public class CustomerOrderTransfer {
         this.paid = customerOrder.getPaid();
         if (customerOrder.getStatus() != null)
         this.statusTransfer = new StatusTransfer(customerOrder.getStatus());
+        this.customerId = customerOrder.getCustomerId();
+        this.offerId = customerOrder.getOfferId();
     }
 }

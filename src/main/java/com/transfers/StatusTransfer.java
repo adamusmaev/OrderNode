@@ -11,6 +11,7 @@ public class StatusTransfer {
     private Integer id;
     private String name;
 
+
     public StatusTransfer(Status status) {
         this.id = status.getId();
         this.name = status.getName();
