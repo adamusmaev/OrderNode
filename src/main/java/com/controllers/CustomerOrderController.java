@@ -11,12 +11,19 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,12 +93,42 @@ public class CustomerOrderController {
     }
 
     @GetMapping(value = "/offer/{offerId}")
-    public void findOfferPrice(@PathVariable Integer offerId) throws IOException {
+    public JSONObject findOfferPrice(@PathVariable Integer offerId) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("http://offer.jelastic.regruhosting.ru/offer" + offerId);
+        HttpGet httpget = new HttpGet("http://offer.jelastic.regruhosting.ru/offer/" + offerId);
         HttpResponse httpresponse = httpclient.execute(httpget);
         Scanner sc = new Scanner(httpresponse.getEntity().getContent());
-        System.out.println(sc.nextLine());
+        JSONObject jsonObjectOffer = new JSONObject(sc.nextLine());
+        Float priceOffer = jsonObjectOffer.getFloat("price");
+        JSONObject jsonObjectCategory = jsonObjectOffer.getJSONObject("categoryTransfer");
+        JSONObject jsonObjectRes = new JSONObject();
+        jsonObjectRes.put("price", priceOffer);
+        jsonObjectRes.put("categoryTransfer", jsonObjectCategory);
+        System.out.println(jsonObjectRes);
+        return jsonObjectRes;
     }
 
+    @PostMapping("/offer/token")
+    public void addOrderWithOfferAndToken(@RequestParam Integer offerId,
+                                          @RequestParam String token) throws IOException, URISyntaxException {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpget = new HttpGet("http://offer.jelastic.regruhosting.ru/offer/" + offerId);
+        HttpResponse httpresponse = httpclient.execute(httpget);
+        Scanner sc = new Scanner(httpresponse.getEntity().getContent());
+        JSONObject jsonObjectOffer = new JSONObject(sc.nextLine());
+        Integer offer = jsonObjectOffer.getInt("id");
+        HttpGet httpgetToken = new HttpGet("http://customernode.jelastic.regruhosting.ru/customer/id");
+        URI uri = new URIBuilder(httpgetToken.getURI())
+                .addParameter("token", token)
+                .build();
+        ((HttpRequestBase) httpgetToken).setURI(uri);
+        httpresponse = httpclient.execute(httpgetToken);
+        sc = new Scanner(httpresponse.getEntity().getContent());
+        Integer customer = Integer.valueOf(sc.nextLine());
+        CustomerOrder order = new CustomerOrder();
+        order.setCustomerId(customer);
+        order.setOfferId(offerId);
+        order.setDeliveryTime(new Date());
+        customerOrderService.saveOrder(order);
+    }
 }
