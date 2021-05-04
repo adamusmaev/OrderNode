@@ -93,7 +93,7 @@ public class CustomerOrderController {
     }
 
     @GetMapping(value = "/offer/{offerId}")
-    public JSONObject findOfferPrice(@PathVariable Integer offerId) throws IOException {
+    public String findOfferPrice(@PathVariable Integer offerId) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpGet httpget = new HttpGet("http://offer.jelastic.regruhosting.ru/offer/" + offerId);
         HttpResponse httpresponse = httpclient.execute(httpget);
@@ -105,7 +105,8 @@ public class CustomerOrderController {
         jsonObjectRes.put("price", priceOffer);
         jsonObjectRes.put("categoryTransfer", jsonObjectCategory);
         System.out.println(jsonObjectRes);
-        return jsonObjectRes;
+        String strRes = String.valueOf(jsonObjectRes);
+        return strRes;
     }
 
     @PostMapping("/offer/token")
