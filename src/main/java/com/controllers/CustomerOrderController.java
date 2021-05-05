@@ -39,6 +39,10 @@ public class CustomerOrderController {
 
     private final StatusService statusService;
 
+    private final String httpGetOfferUri = "http://offer.jelastic.regruhosting.ru/offer/";
+
+    private final String httpGetCustomerUriId = "http://customernode.jelastic.regruhosting.ru/customer/id";
+
     public CustomerOrderController(CustomerOrderService customerOrderService, StatusService statusService) {
         this.customerOrderService = customerOrderService;
         this.statusService = statusService;
@@ -95,7 +99,7 @@ public class CustomerOrderController {
     @GetMapping(value = "/offer/{offerId}")
     public String findOfferPrice(@PathVariable Integer offerId) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("http://offer.jelastic.regruhosting.ru/offer/" + offerId);
+        HttpGet httpget = new HttpGet(httpGetOfferUri + offerId);
         HttpResponse httpresponse = httpclient.execute(httpget);
         Scanner sc = new Scanner(httpresponse.getEntity().getContent());
         JSONObject jsonObjectOffer = new JSONObject(sc.nextLine());
@@ -113,12 +117,12 @@ public class CustomerOrderController {
     public void addOrderWithOfferAndToken(@RequestParam Integer offerId,
                                           @RequestParam String token) throws IOException, URISyntaxException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("http://offer.jelastic.regruhosting.ru/offer/" + offerId);
+        HttpGet httpget = new HttpGet(httpGetOfferUri + offerId);
         HttpResponse httpresponse = httpclient.execute(httpget);
         Scanner sc = new Scanner(httpresponse.getEntity().getContent());
         JSONObject jsonObjectOffer = new JSONObject(sc.nextLine());
         Integer offer = jsonObjectOffer.getInt("id");
-        HttpGet httpgetToken = new HttpGet("http://customernode.jelastic.regruhosting.ru/customer/id");
+        HttpGet httpgetToken = new HttpGet(httpGetCustomerUriId);
         URI uri = new URIBuilder(httpgetToken.getURI())
                 .addParameter("token", token)
                 .build();
@@ -128,7 +132,7 @@ public class CustomerOrderController {
         Integer customer = Integer.valueOf(sc.nextLine());
         CustomerOrder order = new CustomerOrder();
         order.setCustomerId(customer);
-        order.setOfferId(offerId);
+        order.setOfferId(offer);
         order.setDeliveryTime(new Date());
         customerOrderService.saveOrder(order);
     }
