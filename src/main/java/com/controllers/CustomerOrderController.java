@@ -118,7 +118,7 @@ public class CustomerOrderController {
     @GetMapping(value = "/customer/{customerId}")
     public JSONObject findCustomer(@PathVariable Integer customerId) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("http://customer.jelastic.regruhosting.ru/customer/" + customerId);
+        HttpGet httpget = new HttpGet("http://customer.jelastic.regruhosting.ru/customer/1");
         HttpResponse httpresponse = httpclient.execute(httpget);
         Scanner sc = new Scanner(httpresponse.getEntity().getContent());
         JSONObject jsonObjectOffer = new JSONObject(sc.nextLine());
