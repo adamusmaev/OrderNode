@@ -104,11 +104,13 @@ public class CustomerOrderController {
         Scanner sc = new Scanner(httpresponse.getEntity().getContent());
         JSONObject jsonObjectOffer = new JSONObject(sc.nextLine());
         Float priceOffer = jsonObjectOffer.getFloat("price");
-        JSONObject jsonObjectCategory = jsonObjectOffer.getJSONObject("categoryTransfer");
+        JSONObject jsonObjectCategory = new JSONObject(false);
+        if (!jsonObjectOffer.get("categoryTransfer").getClass().getName().equals("org.json.JSONObject$Null")) {
+            jsonObjectCategory = jsonObjectOffer.getJSONObject("categoryTransfer");
+        }
         JSONObject jsonObjectRes = new JSONObject();
         jsonObjectRes.put("price", priceOffer);
         jsonObjectRes.put("categoryTransfer", jsonObjectCategory);
-        System.out.println(jsonObjectRes);
         String strRes = String.valueOf(jsonObjectRes);
         return strRes;
     }
