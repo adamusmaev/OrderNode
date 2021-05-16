@@ -115,6 +115,18 @@ public class CustomerOrderController {
         return strRes;
     }
 
+    @GetMapping(value = "/customer/{customerId}")
+    public JSONObject findCustomer(@PathVariable Integer customerId) throws IOException {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpget = new HttpGet("http://customer.jelastic.regruhosting.ru/customer/" + customerId);
+        HttpResponse httpresponse = httpclient.execute(httpget);
+        Scanner sc = new Scanner(httpresponse.getEntity().getContent());
+        JSONObject jsonObjectOffer = new JSONObject(sc.nextLine());
+        System.out.println(jsonObjectOffer);
+        return jsonObjectOffer;
+    }
+
+
     @PostMapping("/offer/token")
     public void addOrderWithOfferAndToken(@RequestParam Integer offerId,
                                           @RequestParam String token) throws IOException, URISyntaxException {
