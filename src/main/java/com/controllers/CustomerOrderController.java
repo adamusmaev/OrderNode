@@ -39,9 +39,9 @@ public class CustomerOrderController {
 
     private final StatusService statusService;
 
-    private final String httpGetOfferUri = "http://offer.jelastic.regruhosting.ru/offer/";
+    private final String httpGetOfferUri = "http://offernode.jelastic.regruhosting.ru/offer/";
 
-    private final String httpGetCustomerUriId = "http://customernode.jelastic.regruhosting.ru/customer/id";
+    private final String httpGetCustomerUriId = "http://customer.jelastic.regruhosting.ru/customer/id";
 
     public CustomerOrderController(CustomerOrderService customerOrderService, StatusService statusService) {
         this.customerOrderService = customerOrderService;
