@@ -41,7 +41,7 @@ public class CustomerOrderController {
 
     private final String httpGetOfferUri = "http://offernode.jelastic.regruhosting.ru/offer/";
 
-    private final String httpGetCustomerUriId = "http://customer.jelastic.regruhosting.ru/customer/id";
+    private final String httpGetCustomerUriId = "http://customerr.jelastic.regruhosting.ru/customer/id";
 
     public CustomerOrderController(CustomerOrderService customerOrderService, StatusService statusService) {
         this.customerOrderService = customerOrderService;
@@ -118,7 +118,7 @@ public class CustomerOrderController {
     @GetMapping(value = "/customer/{customerId}")
     public JSONObject findCustomer(@PathVariable Integer customerId) throws IOException {
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpget = new HttpGet("http://customer.jelastic.regruhosting.ru/customer/1");
+        HttpGet httpget = new HttpGet("http://customerr.jelastic.regruhosting.ru/customer");
         HttpResponse httpresponse = httpclient.execute(httpget);
         Scanner sc = new Scanner(httpresponse.getEntity().getContent());
         JSONObject jsonObjectOffer = new JSONObject(sc.nextLine());
